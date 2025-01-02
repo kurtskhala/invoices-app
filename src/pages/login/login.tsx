@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Controller, useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Controller, useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const {
@@ -11,12 +11,12 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
-  const onSubmit = (fieldValues: any) => {
+  const onSubmit = (fieldValues: unknown) => {
     console.log(fieldValues);
   };
 
@@ -32,10 +32,10 @@ const Login = () => {
           name="email"
           control={control}
           rules={{
-            required: "email-required",
+            required: 'email-required',
             pattern: {
               value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: "email-invalid",
+              message: 'email-invalid',
             },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
@@ -63,14 +63,14 @@ const Login = () => {
           name="password"
           control={control}
           rules={{
-            required: "password-required",
+            required: 'password-required',
             minLength: {
               value: 8,
-              message: "password-min-length 8",
+              message: 'password-min-length 8',
             },
             maxLength: {
               value: 50,
-              message: "password-max-length 50",
+              message: 'password-max-length 50',
             },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => {

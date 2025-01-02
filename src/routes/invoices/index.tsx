@@ -1,8 +1,8 @@
-import { lazy, Suspense } from "react";
-import { Route } from "react-router-dom";
-import { INVOICE_PATHS } from "./index.enum";
+import { lazy, Suspense } from 'react';
+import { Route } from 'react-router-dom';
+import { INVOICE_PATHS } from './index.enum';
 
-const InvoiceView = lazy(() => import("@/pages/invoices/views/list"));
+const InvoiceView = lazy(() => import('@/pages/invoices/views/list'));
 
 export const INVOICR_VIEW_ROUTE = [
   <Route
