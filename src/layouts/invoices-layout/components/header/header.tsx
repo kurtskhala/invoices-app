@@ -27,7 +27,7 @@ const Header = () => {
   };
 
   return (
-    <header className="h-16 md:w-16 md:h-screen bg-slate-900 flex md:flex-col items-center justify-between p-4 rounded-r-none md:rounded-r-xl">
+    <header className="h-16 md:w-16 md:h-screen bg-slate-900 flex md:flex-col pt-4 items-center justify-between rounded-r-none md:rounded-r-xl">
       <div
         className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center cursor-pointer"
         onClick={handleLogoClick}
@@ -35,11 +35,15 @@ const Header = () => {
         <img src={logo} alt="Logo" />
       </div>
 
-      <div className="flex md:flex-col gap-4 items-center">
+      <div className="w-full flex md:flex-col gap-4 items-center pb-4">
         <Button variant="ghost" size="icon" onClick={handleChangeTheme}>
           {isDark ? <img src={sun} alt="sun" /> : <img src={moon} alt="moon" />}
           <span className="sr-only">Toggle theme</span>
         </Button>
+        <div
+          className="w-full border-t mt-2"
+          style={{ borderColor: '#494E6E', borderWidth: '1px' }}
+        ></div>
         <div className="w-8 h-8 rounded-full bg-slate-800 overflow-hidden">
           <img
             src={avatar}
