@@ -22,7 +22,7 @@ const Login = () => {
 
   return (
     <Card>
-      <CardHeader className="space-y-2">
+      <CardHeader className="space-y-2 mb-2">
         <CardTitle className="text-center text-2xl dark:text-white">
           Log In
         </CardTitle>
@@ -49,6 +49,10 @@ const Login = () => {
                   placeholder="john@example.com"
                   value={value}
                   onChange={onChange}
+                  style={{
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-500">
@@ -84,6 +88,10 @@ const Login = () => {
                   placeholder="password"
                   value={value}
                   onChange={onChange}
+                  style={{
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
                 />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-500">

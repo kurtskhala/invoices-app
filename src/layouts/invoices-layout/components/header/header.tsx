@@ -1,28 +1,37 @@
-import { Button } from "@/components/ui/button";
-import moon from "@/assets/icon-moon.svg";
-import sun from "@/assets/icon-sun.svg";
-import logo from "@/assets/logo.svg";
-import avatar from "@/assets/image-avatar.jpg";
-import { useState } from "react";
+import { Button } from '@/components/ui/button';
+import moon from '@/assets/icon-moon.svg';
+import sun from '@/assets/icon-sun.svg';
+import logo from '@/assets/logo.svg';
+import avatar from '@/assets/image-avatar.jpg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
 
   const handleChangeTheme = () => {
     console.log(isDark);
 
-    const html = document.querySelector("html");
+    const html = document.querySelector('html');
     if (!isDark) {
-      html?.classList.add("dark");
+      html?.classList.add('dark');
     } else {
-      html?.classList.remove("dark");
+      html?.classList.remove('dark');
     }
     setIsDark((prev) => !prev);
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <header className="h-16 md:w-16 md:h-screen bg-slate-900 flex md:flex-col items-center justify-between p-4 rounded-r-none md:rounded-r-xl">
-      <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+      <div
+        className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center cursor-pointer"
+        onClick={handleLogoClick}
+      >
         <img src={logo} alt="Logo" />
       </div>
 
