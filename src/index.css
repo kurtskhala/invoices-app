@@ -1,12 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root{
+    height: 100%;
+  }
+  html {
+    font-family: 'League Spartan', sans-serif;
+  }
+}
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --header-background: 233 31% 17%;
+    --primary-purple: 252 100% 73%;
+    --dark-purple: 252 94% 67%;
+    --background: 240 27% 98%;
+    --foreground: 228 29% 7%;
+    --card: 240 27% 98%;
+    --card-foreground: 228 29% 7%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
     --primary: 0 0% 9%;
@@ -30,10 +46,10 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --background: 228 29% 7%;
+    --foreground: 240 27% 98%;
+    --card: 228 29% 7%;
+    --card-foreground: 240 27% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;

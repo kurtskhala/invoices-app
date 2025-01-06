@@ -182,7 +182,11 @@ const Register = () => {
             );
           }}
         />
-        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+        <Button
+          type="submit"
+          variant="default"
+          className="w-full bg-primary-purple hover:bg-dark-purple"
+        >
           Register
         </Button>
       </form>
