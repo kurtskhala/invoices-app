@@ -23,9 +23,7 @@ const Login = () => {
   return (
     <Card>
       <CardHeader className="space-y-2 mb-2">
-        <CardTitle className="text-center text-2xl dark:text-white">
-          Log In
-        </CardTitle>
+        <CardTitle className="text-center text-2xl">Log In</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <Controller
@@ -102,7 +100,11 @@ const Login = () => {
             );
           }}
         />
-        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+        <Button
+          type="submit"
+          variant="default"
+          className="w-full bg-primary-purple hover:bg-dark-purple"
+        >
           Log In
         </Button>
       </form>
