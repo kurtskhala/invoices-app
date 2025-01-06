@@ -11,36 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useState, useMemo } from 'react';
-
-type Invoice = {
-  id: string;
-  createdAt: string;
-  paymentDue: string;
-  description: string;
-  paymentTerms: number;
-  clientName: string;
-  clientEmail: string;
-  status: 'paid' | 'pending' | 'draft';
-  senderAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  clientAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-    total: number;
-  }[];
-  total: number;
-};
+import { Invoice } from '@/types';
 
 const Invoices = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -288,9 +259,9 @@ const Invoices = () => {
   };
 
   return (
-    <div className="mt-[77px] w-full flex flex-col items-center gap-y-[64px] px-4">
+    <div className="w-full flex flex-col items-center h-sm:gap-y-[64px]  gap-y-[15px] px-4">
       {/* Header */}
-      <div className="lg:w-[780px] md:w-[560px] sm:w-[450px] gap-x-[40px] h-[55px] flex justify-between">
+      <div className="h-sm:mt-[77px] mt-[20px] lg:w-[780px] md:w-[560px] sm:w-[450px] gap-x-[40px] h-[55px] flex justify-between">
         <div className="flex flex-col">
           <p className="text-3xl font-bold">Invoices</p>
           <p className="text-muted-foreground opacity-55">
@@ -337,7 +308,7 @@ const Invoices = () => {
 
       {/* Body */}
       {data.length ? (
-        <div className="lg:w-[780px] md:w-[560px] sm:w-[450px] gap-x-[40px] flex flex-col gap-y-4 mb-5">
+        <div className="max-h-[60vh] custom-scrollbar overflow-auto lg:w-[780px] md:w-[560px] sm:w-[450px]  flex flex-col gap-y-4 mb-5">
           {filteredInvoices.map((item) => (
             <InvoiceListItem item={item} key={item.id} />
           ))}
