@@ -1,4 +1,5 @@
 export interface Invoice {
+  _id: string;
   id: string;
   createdAt: string;
   paymentDue: string;
