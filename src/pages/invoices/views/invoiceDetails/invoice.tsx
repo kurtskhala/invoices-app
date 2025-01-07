@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Invoice as InvoiceType } from '@/types';
 
 import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
+import EditAddDialog from '@/layouts/invoices-layout/components/addEditInvoice';
 
 const Invoice = () => {
   const { id } = useParams();
@@ -59,9 +60,11 @@ const Invoice = () => {
             <Badge variant={invoice?.status}>{invoice?.status}</Badge>
           </div>
           <div className="flex justify-between items-center gap-x-[10px]">
-            <Button className="text-[9px] sm:text-[15px]" variant="ghost">
-              Edit
-            </Button>
+            <EditAddDialog
+              action="Edit"
+              createdId={invoice?.id}
+              id={invoice?._id}
+            />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
             <Button className="text-[9px] sm:text-[15px]" variant="custom">
               Mark as Paid
