@@ -9,6 +9,9 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      screens: {
+        'h-sm': { raw: '(min-height: 460px)' },
+      },
       colors: {
         'header-bg': 'hsl(var(--header-background))',
         'primary-purple': 'hsl(var(--primary-purple))',
