@@ -3,12 +3,20 @@ import { Controller, useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { LoginData } from '@/types';
+import { authService } from '@/services/auth.service';
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm({
     defaultValues: {
       email: '',
@@ -16,8 +24,20 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (fieldValues: unknown) => {
-    console.log(fieldValues);
+  const onSubmit = async (data: LoginData) => {
+    try {
+      setIsLoading(true);
+      await authService.login(data.email, data.password);
+      navigate('/invoices');
+    } catch (error) {
+      console.log(error);
+      setError('email', {
+        type: 'manual',
+        message: 'Invalid credentials',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -67,8 +87,8 @@ const Login = () => {
           rules={{
             required: 'password-required',
             minLength: {
-              value: 8,
-              message: 'password-min-length 8',
+              value: 6,
+              message: 'password-min-length 6',
             },
             maxLength: {
               value: 50,
@@ -105,9 +125,15 @@ const Login = () => {
           variant="default"
           className="w-full bg-primary-purple hover:bg-dark-purple"
         >
-          Log In
+          {isLoading ? 'Logging in...' : 'Log In'}
         </Button>
       </form>
+      <div className="flex flex-col items-center pt-5">
+        <p>Do not have an account yet?</p>
+        <Button variant="ghost" onClick={() => navigate('/signup')}>
+          Sign Up
+        </Button>
+      </div>
     </Card>
   );
 };

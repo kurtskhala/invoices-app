@@ -5,6 +5,8 @@ import LeftArrow from '@/assets/icon-arrow-left.svg';
 import { Badge } from '@/components/ui/badge';
 import { Invoice as InvoiceType } from '@/types';
 
+import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
+
 const Invoice = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -45,21 +47,25 @@ const Invoice = () => {
   }
 
   return (
-    <div className="h-sm:mt-[65px] mt-[20px] w-full flex flex-col items-center px-4">
+    <div className="h-sm:mt-[65px] mt-[20px] w-full flex flex-col items-center px-4 text-[9px] sm:text-[15px]">
       <div className="lg:w-[780px] md:w-[560px] flex flex-col gap-y-[24px] items-start">
         <Button variant="link" onClick={handleGoBack} className="pl-0">
           <img src={LeftArrow} alt="left arrow" />
           <p className="pt-1">Go Back</p>
         </Button>
-        <div className="w-full flex items-center justify-between py-[32px] px-[24px] rounded-[8px] shadow-[0px_4px_6px_rgba(72,84,159,0.1)]">
-          <div className="flex justify-between items-center gap-x-[10px]">
+        <div className="w-full flex flex-wrap gap-y-4 items-center justify-center sm:justify-between p-[12px] sm:py-[32px] sm:px-[24px] rounded-[8px] shadow-[0px_4px_6px_rgba(72,84,159,0.1)]">
+          <div className="flex justify-between items-center gap-x-[10px] text-[9px] sm:text-[15px]">
             <p className="text-muted-foreground">Status</p>
             <Badge variant={invoice?.status}>{invoice?.status}</Badge>
           </div>
           <div className="flex justify-between items-center gap-x-[10px]">
-            <Button variant="ghost">Edit</Button>
-            <Button variant="destructive">Delete</Button>
-            <Button variant="custom">Mark as Paid</Button>
+            <Button className="text-[9px] sm:text-[15px]" variant="ghost">
+              Edit
+            </Button>
+            <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
+            <Button className="text-[9px] sm:text-[15px]" variant="custom">
+              Mark as Paid
+            </Button>
           </div>
         </div>
         {/* details */}

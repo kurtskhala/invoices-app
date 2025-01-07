@@ -28,3 +28,20 @@ export interface Invoice {
   }[];
   total: number;
 }
+
+export interface SignUpData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface DeletePopUpProps {
+  id?: string;
+  createdId?: string;
+}

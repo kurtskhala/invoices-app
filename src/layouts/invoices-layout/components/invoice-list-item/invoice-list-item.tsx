@@ -9,7 +9,7 @@ const InvoiceListItem = ({ item, onClick }) => {
   return (
     <div
       onClick={() => onClick()}
-      className="sm:p-[30px] p-[10px] rounded-[8px] shadow-[0px_4px_6px_rgba(72,84,159,0.1)] flex justify-evenly items-center sm:gap-x-2 gap-x-10"
+      className="sm:p-[30px] p-[10px] rounded-[8px] shadow-[0px_4px_6px_rgba(72,84,159,0.1)] flex justify-evenly items-center sm:gap-x-2 gap-x-10 cursor-pointer"
     >
       <p>
         <span className="text-muted-foreground">#</span>
@@ -21,7 +21,7 @@ const InvoiceListItem = ({ item, onClick }) => {
       <p className="text-muted-foreground hidden sm:block">{item.clientName}</p>
       <p className="font-bold hidden sm:block">£ {item.total.toFixed(2)}</p>
       <Badge variant={item.status}>{item.status}</Badge>
-      <img src={RightArrow} alt="left arrow" className="hover:cursor-pointer" />
+      <img src={RightArrow} alt="left arrow"/>
     </div>
   );
 };
