@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +10,16 @@
     height: 100%;
   }
   html {
-    font-family: 'League Spartan', sans-serif;
+    font-family: "League Spartan", sans-serif;
+  }
+}
+@layer components {
+  [data-vaul-drawer][data-vaul-drawer-direction="bottom"]::after {
+    top: 100%;
+    bottom: initial;
+    left: 0;
+    right: 0;
+    height: 0 !important;
   }
 }
 @layer components {

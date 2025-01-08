@@ -7,7 +7,7 @@ export interface Invoice {
   paymentTerms: number;
   clientName: string;
   clientEmail: string;
-  status: 'paid' | 'pending' | 'draft';
+  status: "paid" | "pending" | "draft";
   senderAddress: {
     street: string;
     city: string;
@@ -44,4 +44,19 @@ export interface LoginData {
 export interface DeletePopUpProps {
   id?: string;
   createdId?: string;
+}
+
+export interface EditAddDialogProps {
+  action: string;
+  createdId?: string;
+  id?: string;
+}
+
+export interface InvoiceListItemProps {
+  id: string;
+  onClick: () => void;
+}
+
+export interface InvoiceFormProps {
+  action: string;
 }
