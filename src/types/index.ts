@@ -7,7 +7,11 @@ export interface Invoice {
   paymentTerms: number;
   clientName: string;
   clientEmail: string;
+<<<<<<< HEAD
   status: "paid" | "pending" | "draft";
+=======
+  status: 'paid' | 'pending' | 'draft';
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71
   senderAddress: {
     street: string;
     city: string;
@@ -45,6 +49,7 @@ export interface DeletePopUpProps {
   id?: string;
   createdId?: string;
 }
+<<<<<<< HEAD
 
 export interface EditAddDialogProps {
   action?: string;
@@ -56,3 +61,5 @@ export interface InvoiceListItemProps {
   id: string;
   onClick: () => void;
 }
+=======
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71

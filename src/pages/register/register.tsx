@@ -3,23 +3,60 @@ import { Controller, useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { SignUpData } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm({
     defaultValues: {
-      name: '',
+      firstName: '',
       lastName: '',
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = (fieldValues: unknown) => {
-    console.log(fieldValues);
+  const onSubmit = async (data: SignUpData) => {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch('http://localhost:3000/auth/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.message === 'Email already exists') {
+          setError('email', {
+            type: 'manual',
+            message: 'Email already in use',
+          });
+        } else {
+          throw new Error(errorData.message || 'Something went wrong');
+        }
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log('Signup successful:', result);
+      navigate('/signin');
+    } catch (error) {
+      console.error('Signup error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -32,7 +69,7 @@ const Register = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex space-x-4">
           <Controller
-            name="name"
+            name="firstName"
             control={control}
             rules={{
               required: 'name-required',
@@ -46,10 +83,10 @@ const Register = () => {
               return (
                 <>
                   <div>
-                    <Label>Name</Label>
+                    <Label>First Name</Label>
                     <Input
                       type="text"
-                      name="name"
+                      name="firstName"
                       placeholder="John"
                       value={value}
                       onChange={onChange}
@@ -58,9 +95,9 @@ const Register = () => {
                         boxShadow: 'none',
                       }}
                     />
-                    {errors.name && (
+                    {errors.firstName && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors.name.message}
+                        {errors.firstName.message}
                       </p>
                     )}
                   </div>
@@ -87,7 +124,7 @@ const Register = () => {
                     <Label>Last Name</Label>
                     <Input
                       type="text"
-                      name="lastname"
+                      name="lastName"
                       placeholder="Doe"
                       value={value}
                       onChange={onChange}
@@ -149,8 +186,8 @@ const Register = () => {
           rules={{
             required: 'password-required',
             minLength: {
-              value: 8,
-              message: 'password-min-length 8',
+              value: 6,
+              message: 'password-min-length 6',
             },
             maxLength: {
               value: 50,
@@ -186,10 +223,17 @@ const Register = () => {
           type="submit"
           variant="default"
           className="w-full bg-primary-purple hover:bg-dark-purple"
+          disabled={isLoading}
         >
-          Register
+          {isLoading ? 'Signing up...' : 'Register'}
         </Button>
       </form>
+      <div className="flex flex-col items-center pt-5">
+        <p>Do you already have an account?</p>
+        <Button variant="ghost" onClick={() => navigate('/signin')}>
+          Log In
+        </Button>
+      </div>
     </Card>
   );
 };

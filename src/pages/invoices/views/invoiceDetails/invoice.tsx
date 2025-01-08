@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,17 @@ import { Invoice as InvoiceType } from "@/types";
 
 import DeletePopUp from "@/layouts/invoices-layout/components/deletePopUp";
 import EditAddDialog from "@/layouts/invoices-layout/components/editAddInvoice";
+=======
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import LeftArrow from '@/assets/icon-arrow-left.svg';
+import { Badge } from '@/components/ui/badge';
+import { Invoice as InvoiceType } from '@/types';
+
+import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
+import EditAddDialog from '@/layouts/invoices-layout/components/addEditInvoice';
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71
 
 const Invoice = () => {
   const { id } = useParams();
@@ -20,7 +32,11 @@ const Invoice = () => {
       try {
         const response = await fetch(`http://localhost:3000/invoices/${id}`);
         if (!response.ok) {
+<<<<<<< HEAD
           throw new Error("Failed to fetch invoice");
+=======
+          throw new Error('Failed to fetch invoice');
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71
         }
         const data = await response.json();
         setInvoice(data);
@@ -36,7 +52,11 @@ const Invoice = () => {
   }, [id]);
 
   const handleGoBack = () => {
+<<<<<<< HEAD
     navigate("/invoices");
+=======
+    navigate('/invoices');
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71
   };
 
   if (loading) {
@@ -145,7 +165,11 @@ const Invoice = () => {
             <div className="bg-foreground text-background mt-8 p-6 rounded-lg flex justify-between items-center">
               <p>Amount Due</p>
               <p className="text-2xl font-bold">
+<<<<<<< HEAD
                 £{" "}
+=======
+                £{' '}
+>>>>>>> 7289d1e9f23e42d9c438564772f8ece197be0c71
                 {invoice?.items
                   .reduce((acc, item) => acc + item.total, 0)
                   .toFixed(2)}

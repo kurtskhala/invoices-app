@@ -6,14 +6,33 @@
 @layer base {
   html,
   body,
-  #root{
+  #root {
     height: 100%;
   }
   html {
     font-family: 'League Spartan', sans-serif;
   }
 }
+@layer components {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
 
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--header-background);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+  }
+}
 @layer base {
   :root {
     --header-background: 233 31% 17%;
