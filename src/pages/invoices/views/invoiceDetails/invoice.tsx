@@ -20,7 +20,9 @@ const Invoice = () => {
       try {
         const response = await fetch(`http://localhost:3000/invoices/${id}`);
         if (!response.ok) {
+
           throw new Error("Failed to fetch invoice");
+
         }
         const data = await response.json();
         setInvoice(data);
@@ -36,7 +38,9 @@ const Invoice = () => {
   }, [id]);
 
   const handleGoBack = () => {
+
     navigate("/invoices");
+
   };
 
   if (loading) {
@@ -66,9 +70,11 @@ const Invoice = () => {
               id={invoice?._id}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            <Button className="text-[9px] sm:text-[15px]" variant="custom">
-              Mark as Paid
-            </Button>
+            {invoice?.status !== "paid" && (
+              <Button className="text-[9px] sm:text-[15px]" variant="custom">
+                Mark as Paid
+              </Button>
+            )}
           </div>
         </div>
         {/* details */}
@@ -145,7 +151,7 @@ const Invoice = () => {
             <div className="bg-foreground text-background mt-8 p-6 rounded-lg flex justify-between items-center">
               <p>Amount Due</p>
               <p className="text-2xl font-bold">
-                £{" "}
+                £{' '}
                 {invoice?.items
                   .reduce((acc, item) => acc + item.total, 0)
                   .toFixed(2)}
