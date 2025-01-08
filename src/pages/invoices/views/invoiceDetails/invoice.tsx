@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import LeftArrow from "@/assets/icon-arrow-left.svg";
-import { Badge } from "@/components/ui/badge";
-import { Invoice as InvoiceType } from "@/types";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import LeftArrow from '@/assets/icon-arrow-left.svg';
+import { Badge } from '@/components/ui/badge';
+import { Invoice as InvoiceType } from '@/types';
 
-import DeletePopUp from "@/layouts/invoices-layout/components/deletePopUp";
-import EditAddDialog from "@/layouts/invoices-layout/components/editAdditInvoice";
+import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
+import EditAddDialog from '@/layouts/invoices-layout/components/editAdditInvoice';
+import { authService } from '@/services/auth.service';
 
 const Invoice = () => {
   const { id } = useParams();
@@ -20,9 +21,7 @@ const Invoice = () => {
       try {
         const response = await fetch(`http://localhost:3000/invoices/${id}`);
         if (!response.ok) {
-
-          throw new Error("Failed to fetch invoice");
-
+          throw new Error('Failed to fetch invoice');
         }
         const data = await response.json();
         setInvoice(data);
@@ -38,9 +37,32 @@ const Invoice = () => {
   }, [id]);
 
   const handleGoBack = () => {
+    navigate('/invoices');
+  };
 
-    navigate("/invoices");
+  const handleMarkAsPaid = async () => {
+    try {
+      const response = await authService.fetchWithAuth(
+        `http://localhost:3000/invoices/${invoice?._id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'paid' }),
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error('Failed to update invoice status');
+      }
+
+      const updatedInvoice = await response.json();
+      setInvoice(updatedInvoice);
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      alert('Failed to update invoice status. Please try again.');
+    }
   };
 
   if (loading) {
@@ -70,8 +92,12 @@ const Invoice = () => {
               id={invoice?._id}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            {invoice?.status !== "paid" && (
-              <Button className="text-[9px] sm:text-[15px]" variant="custom">
+            {invoice?.status !== 'paid' && (
+              <Button
+                className="text-[9px] sm:text-[15px]"
+                variant="custom"
+                onClick={handleMarkAsPaid}
+              >
                 Mark as Paid
               </Button>
             )}
