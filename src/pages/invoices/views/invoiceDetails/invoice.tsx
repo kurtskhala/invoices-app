@@ -66,9 +66,11 @@ const Invoice = () => {
               id={invoice?._id}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            <Button className="text-[9px] sm:text-[15px]" variant="custom">
-              Mark as Paid
-            </Button>
+            {invoice?.status !== "paid" && (
+              <Button className="text-[9px] sm:text-[15px]" variant="custom">
+                Mark as Paid
+              </Button>
+            )}
           </div>
         </div>
         {/* details */}

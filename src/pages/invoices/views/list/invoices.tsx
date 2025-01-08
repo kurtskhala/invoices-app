@@ -32,7 +32,7 @@ const Invoices = () => {
       try {
         const response = await fetch("http://localhost:3000/invoices/");
         if (!response.ok) {
-          throw new Error("Failed to fetch invoices");
+          throw new Error("Failed to fetch invoice");
         }
         const invoices: Invoice[] = await response.json();
         setData(invoices);
@@ -72,7 +72,7 @@ const Invoices = () => {
           <p className="text-3xl font-bold">Invoices</p>
           <p className="text-muted-foreground opacity-55">
             {data.length
-              ? `There are ${data.length} total invoices`
+              ? `There are ${data.length} total invoice(s)`
               : "No invoices"}
           </p>
         </div>
