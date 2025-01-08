@@ -3,22 +3,21 @@ import {
   // DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from '@/components/ui/drawer';
 
-import { EditAddDialogProps } from "@/types";
-import { FC } from "react";
-import InvoiceForm from "../invoiceForm";
-import Plus from "@/assets/icon-plus.svg";
+import { EditAddDialogProps } from '@/types';
+import { FC } from 'react';
+import InvoiceForm from '../invoiceForm';
+import Plus from '@/assets/icon-plus.svg';
 
 const EditAddDialog: FC<EditAddDialogProps> = ({ action, createdId, id }) => {
   console.log(id);
   return (
     <Drawer>
-      {action === "Edit" ? (
+      {action === 'Edit' ? (
         <DrawerTrigger className="font-bold rounded-[24px] h-10 px-4 py-2 text-[9px] sm:text-[15px] hover:bg-accent hover:text-accent-foreground">
           {action}
         </DrawerTrigger>
@@ -39,11 +38,6 @@ const EditAddDialog: FC<EditAddDialogProps> = ({ action, createdId, id }) => {
           <DrawerDescription></DrawerDescription>
           <InvoiceForm action={action}></InvoiceForm>
         </DrawerHeader>
-        <DrawerFooter>
-          {/* <DrawerClose>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose> */}
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

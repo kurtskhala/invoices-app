@@ -1,10 +1,11 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Input } from '@/components/ui/input';
+import { Label } from '@radix-ui/react-label';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
-import { InvoiceFormProps } from "@/types";
-import { FC } from "react";
+import { InvoiceFormProps } from '@/types';
+import { FC } from 'react';
+import { DrawerClose } from '@/components/ui/drawer';
 
 const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   return (
@@ -252,16 +253,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4">
-            {action === "Edit" ? (
+            {action === 'Edit' ? (
               <>
-                <Button variant="destructive">Cancel</Button>
+                <DrawerClose asChild>
+                  <Button variant="destructive">Cancel</Button>
+                </DrawerClose>
                 <Button variant="custom">Save Changes</Button>
               </>
             ) : (
               <>
-
-
-                <Button variant="destructive">discard</Button>
+                <DrawerClose asChild>
+                  <Button variant="destructive">Discard</Button>
+                </DrawerClose>
                 <Button variant="secondary">Save As Draft</Button>
                 <Button variant="custom">Save & Send</Button>
               </>

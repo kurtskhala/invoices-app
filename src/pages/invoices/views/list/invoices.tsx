@@ -1,7 +1,7 @@
-import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import DownArrow from "@/assets/icon-arrow-down.svg";
-import Empty from "@/assets/illustration-empty.svg";
+import { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DownArrow from '@/assets/icon-arrow-down.svg';
+import Empty from '@/assets/illustration-empty.svg';
 
 import {
   DropdownMenu,
@@ -9,15 +9,15 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Invoice } from "@/types";
-import InvoiceListItem from "@/layouts/invoices-layout/components/invoiceListItem";
-import EditAddDialog from "@/layouts/invoices-layout/components/editAdditInvoice";
+} from '@/components/ui/dropdown-menu';
+import { Invoice } from '@/types';
+import InvoiceListItem from '@/layouts/invoices-layout/components/invoiceListItem';
+import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
 
 const Invoices = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Invoice[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,9 +30,9 @@ const Invoices = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await fetch("http://localhost:3000/invoices/");
+        const response = await fetch('http://localhost:3000/invoices/');
         if (!response.ok) {
-          throw new Error("Failed to fetch invoice");
+          throw new Error('Failed to fetch invoice');
         }
         const invoices: Invoice[] = await response.json();
         setData(invoices);
@@ -48,7 +48,7 @@ const Invoices = () => {
   }, []);
 
   const filteredInvoices = useMemo(() => {
-    if (statusFilter === "") return data;
+    if (statusFilter === '') return data;
     return data.filter((invoice) => invoice.status === statusFilter);
   }, [statusFilter, data]);
 
@@ -73,7 +73,7 @@ const Invoices = () => {
           <p className="text-muted-foreground opacity-55">
             {data.length
               ? `There are ${data.length} total invoice(s)`
-              : "No invoices"}
+              : 'No invoices'}
           </p>
         </div>
 
@@ -85,17 +85,17 @@ const Invoices = () => {
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleFilter("")}>
+              <DropdownMenuItem onClick={() => handleFilter('')}>
                 Clear All
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleFilter("paid")}>
+              <DropdownMenuItem onClick={() => handleFilter('paid')}>
                 Paid
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleFilter("pending")}>
+              <DropdownMenuItem onClick={() => handleFilter('pending')}>
                 Pending
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleFilter("draft")}>
+              <DropdownMenuItem onClick={() => handleFilter('draft')}>
                 Draft
               </DropdownMenuItem>
             </DropdownMenuContent>
