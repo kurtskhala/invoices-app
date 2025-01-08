@@ -51,7 +51,7 @@ const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
   }
 
 
-  if (!invoice) return null;
+  if (!item) return null;
 
 
   const options: Intl.DateTimeFormatOptions = {
@@ -59,7 +59,7 @@ const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
     month: "short",
     day: "numeric",
   };
-  const date = new Date(invoice.paymentDue);
+  const date = new Date(item.paymentDue);
   const formattedDate = date.toLocaleDateString("en-GB", options);
 
   return (
