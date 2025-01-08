@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+
 import { InvoiceFormProps } from "@/types";
 import { FC } from "react";
 
@@ -258,7 +259,9 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
               </>
             ) : (
               <>
-                <Button variant="destructive">Discard</Button>
+
+
+                <Button variant="destructive">discard</Button>
                 <Button variant="secondary">Save As Draft</Button>
                 <Button variant="custom">Save & Send</Button>
               </>
