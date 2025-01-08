@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Invoice as InvoiceType } from '@/types';
 
 import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
-import EditAddDialog from '@/layouts/invoices-layout/components/editAdditInvoice';
+import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
 import { authService } from '@/services/auth.service';
 
 const Invoice = () => {

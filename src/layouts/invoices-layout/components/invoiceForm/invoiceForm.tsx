@@ -255,7 +255,9 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
           <div className="flex justify-end space-x-4">
             {action === 'Edit' ? (
               <>
-                <Button variant="destructive">Cancel</Button>
+                <DrawerClose asChild>
+                  <Button variant="destructive">Cancel</Button>
+                </DrawerClose>
                 <Button variant="custom">Save Changes</Button>
               </>
             ) : (
