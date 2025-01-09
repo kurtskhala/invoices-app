@@ -6,18 +6,18 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer';
+} from "@/components/ui/drawer";
 
-import { EditAddDialogProps } from '@/types';
-import { FC } from 'react';
-import InvoiceForm from '../invoiceForm';
-import Plus from '@/assets/icon-plus.svg';
+import { EditAddDialogProps } from "@/types";
+import { FC } from "react";
+import InvoiceForm from "../invoiceForm";
+import Plus from "@/assets/icon-plus.svg";
 
 const EditAddDialog: FC<EditAddDialogProps> = ({ action, createdId, id }) => {
   console.log(id);
   return (
     <Drawer>
-      {action === 'Edit' ? (
+      {action === "Edit" ? (
         <DrawerTrigger className="font-bold rounded-[24px] h-10 px-4 py-2 text-[9px] sm:text-[15px] hover:bg-accent hover:text-accent-foreground">
           {action}
         </DrawerTrigger>
@@ -34,7 +34,9 @@ const EditAddDialog: FC<EditAddDialogProps> = ({ action, createdId, id }) => {
 
       <DrawerContent className="after:h-auto overflow-y-auto custom-scrollbar">
         <DrawerHeader>
-          <DrawerTitle>{`${action} #${createdId}`}</DrawerTitle>
+          <DrawerTitle>{`${action} ${
+            createdId ? `#${createdId}` : ""
+          }`}</DrawerTitle>
           <DrawerDescription></DrawerDescription>
           <InvoiceForm action={action}></InvoiceForm>
         </DrawerHeader>
