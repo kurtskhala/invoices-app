@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { SignUpData } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '@/services/auth.service';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,33 +28,19 @@ const Register = () => {
   const onSubmit = async (data: SignUpData) => {
     try {
       setIsLoading(true);
-
-      const response = await fetch('http://localhost:3000/auth/sign-up', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.message === 'Email already exists') {
+      await authService.signup(data);
+      navigate('/signin');
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === 'Email already in use') {
           setError('email', {
             type: 'manual',
             message: 'Email already in use',
           });
         } else {
-          throw new Error(errorData.message || 'Something went wrong');
+          console.error('Signup error:', error);
         }
-        return;
       }
-
-      const result = await response.json();
-
-      console.log('Signup successful:', result);
-      navigate('/signin');
-    } catch (error) {
-      console.error('Signup error:', error);
     } finally {
       setIsLoading(false);
     }
