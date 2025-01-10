@@ -1,31 +1,23 @@
-import { Badge } from "@/components/ui/badge";
-import RightArrow from "@/assets/icon-arrow-right.svg";
+import { Badge } from '@/components/ui/badge';
+import RightArrow from '@/assets/icon-arrow-right.svg';
 
-import { Invoice, InvoiceListItemProps } from "@/types";
-import { useEffect, useState } from "react";
+import { Invoice, InvoiceListItemProps } from '@/types';
+import { useEffect, useState } from 'react';
+import { invoiceService } from '@/services/invoice.service';
 
 const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
-  const [item, setItem] = useState<Invoice | null>(null);  
+  const [item, setItem] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInvoice = async () => {
+      if (!id) return;
       try {
-        setLoading(true);
-        const response = await fetch(`http://localhost:3000/invoices/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch invoice");
-        }
-
-        const data: Invoice = await response.json();
+        const data = await invoiceService.getInvoice(id);
         setItem(data);
-      } 
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       catch (err: any) {
-        setError(err.message);
-
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
@@ -50,17 +42,15 @@ const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
     );
   }
 
-
   if (!item) return null;
 
-
   const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   };
   const date = new Date(item.paymentDue);
-  const formattedDate = date.toLocaleDateString("en-GB", options);
+  const formattedDate = date.toLocaleDateString('en-GB', options);
 
   return (
     <div
@@ -71,7 +61,6 @@ const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
         <span className="text-muted-foreground">#</span>
 
         <span className="font-bold">{`${item.id}`}</span>
-
       </p>
       <p className="text-muted-foreground hidden sm:block">
         Due {formattedDate}

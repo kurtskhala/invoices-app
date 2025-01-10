@@ -2,12 +2,13 @@ export interface Invoice {
   _id: string;
   id: string;
   createdAt: string;
+  invoiceDate: string;
   paymentDue: string;
   description: string;
   paymentTerms: number;
   clientName: string;
   clientEmail: string;
-  status: "paid" | "pending" | "draft";
+  status: 'paid' | 'pending' | 'draft';
   senderAddress: {
     street: string;
     city: string;
@@ -59,4 +60,9 @@ export interface InvoiceListItemProps {
 
 export interface InvoiceFormProps {
   action: string;
+}
+
+export interface CacheItem<T> {
+  data: T;
+  timestamp: number;
 }

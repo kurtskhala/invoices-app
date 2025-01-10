@@ -12,22 +12,14 @@ import {
 import { DeletePopUpProps } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/services/auth.service';
+import { invoiceService } from '@/services/invoice.service';
 
 const DeletePopUp: FC<DeletePopUpProps> = ({ createdId, id }) => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
     try {
-      const response = await authService.fetchWithAuth(
-        `http://localhost:3000/invoices/${id}`,
-        {
-          method: 'DELETE',
-        }
-      );
-      if (!response.ok) {
-        throw new Error('Failed to delete invoice.');
-      }
+      await invoiceService.deleteInvoice(id);
       navigate('/invoices');
     } catch (error) {
       console.error('Error deleting invoice:', error);

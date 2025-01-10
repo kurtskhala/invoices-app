@@ -4,30 +4,25 @@ import { Button } from '@/components/ui/button';
 import LeftArrow from '@/assets/icon-arrow-left.svg';
 import { Badge } from '@/components/ui/badge';
 import { Invoice as InvoiceType } from '@/types';
-
 import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
 import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
-import { authService } from '@/services/auth.service';
+import { invoiceService } from '@/services/invoice.service';
 
 const Invoice = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [invoice, setInvoice] = useState<InvoiceType | null>(null);
+  const [invoice, setInvoice] = useState<InvoiceType>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInvoice = async () => {
+      if (!id) return;
       try {
-        const response = await fetch(`http://localhost:3000/invoices/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch invoice');
-        }
-        const data = await response.json();
+        const data = await invoiceService.getInvoice(id);
         setInvoice(data);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
@@ -41,23 +36,12 @@ const Invoice = () => {
   };
 
   const handleMarkAsPaid = async () => {
+    if (!invoice?._id) return;
     try {
-      const response = await authService.fetchWithAuth(
-        `http://localhost:3000/invoices/${invoice?._id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ status: 'paid' }),
-        }
+      const updatedInvoice = await invoiceService.updateInvoiceStatus(
+        invoice._id,
+        'paid'
       );
-
-      if (!response.ok) {
-        throw new Error('Failed to update invoice status');
-      }
-
-      const updatedInvoice = await response.json();
       setInvoice(updatedInvoice);
     } catch (error) {
       console.error('Error updating invoice:', error);

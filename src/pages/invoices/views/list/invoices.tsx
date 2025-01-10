@@ -13,6 +13,7 @@ import {
 import { Invoice } from '@/types';
 import InvoiceListItem from '@/layouts/invoices-layout/components/invoiceListItem';
 import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
+import { invoiceService } from '@/services/invoice.service';
 
 const Invoices = () => {
   const navigate = useNavigate();
@@ -30,15 +31,10 @@ const Invoices = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await fetch('http://localhost:3000/invoices/');
-        if (!response.ok) {
-          throw new Error('Failed to fetch invoice');
-        }
-        const invoices: Invoice[] = await response.json();
-        setData(invoices);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        setError(error.message);
+        const data = await invoiceService.getAllInvoices();
+        setData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
