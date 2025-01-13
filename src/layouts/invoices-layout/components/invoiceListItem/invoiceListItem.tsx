@@ -50,7 +50,7 @@ const InvoiceListItem: React.FC<InvoiceListItemProps> = ({ id, onClick }) => {
     day: 'numeric',
   };
   const date = new Date(item.paymentDue);
-  const formattedDate = date.toLocaleDateString('en-GB', options);
+  const formattedDate = date?.toLocaleDateString('en-GB', options);
 
   return (
     <div

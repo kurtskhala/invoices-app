@@ -32,7 +32,7 @@ export function DatePicker({
           variant={'outline'}
           className={cn(
             'w-[240px] justify-start text-left text-foreground font-bold rounded-[8px]',
-            !date && 'text-muted-foreground'
+            !date && 'text-muted-foreground '
           )}
         >
           <CalendarIcon />
