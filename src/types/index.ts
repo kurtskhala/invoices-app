@@ -1,7 +1,7 @@
 export interface Invoice {
-  _id: string;
-  id: string;
-  createdAt: string;
+  _id?: string;
+  id?: string;
+  createdAt?: string;
   invoiceDate: string;
   paymentDue: string;
   description: string;
@@ -25,9 +25,30 @@ export interface Invoice {
     name: string;
     quantity: number;
     price: number;
-    total: number;
+    total?: number;
   }[];
   total: number;
+}
+
+export interface ValidationErrors {
+  senderAddress?: {
+    street?: string;
+    city?: string;
+    postCode?: string;
+    country?: string;
+  };
+  clientAddress?: {
+    street?: string;
+    city?: string;
+    postCode?: string;
+    country?: string;
+  };
+  clientName?: string;
+  clientEmail?: string;
+  invoiceDate?: string;
+  paymentTerms?: string;
+  description?: string;
+  items?: string[];
 }
 
 export interface SignUpData {
@@ -54,7 +75,7 @@ export interface EditAddDialogProps {
 }
 
 export interface InvoiceListItemProps {
-  id: string;
+  id?: string;
   onClick: () => void;
 }
 

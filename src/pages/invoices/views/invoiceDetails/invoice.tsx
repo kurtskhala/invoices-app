@@ -76,7 +76,7 @@ const Invoice = () => {
               id={invoice?._id}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            {invoice?.status !== 'paid' && (
+            {invoice?.status === 'pending' && (
               <Button
                 className="text-[9px] sm:text-[15px]"
                 variant="custom"
@@ -152,7 +152,7 @@ const Invoice = () => {
                 <p className="text-center">{item.quantity}</p>
                 <p className="text-right">£ {item.price.toFixed(2)}</p>
                 <p className="text-right font-bold">
-                  £ {item.total.toFixed(2)}
+                  £ {item.total?.toFixed(2)}
                 </p>
               </div>
             ))}

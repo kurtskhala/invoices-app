@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import deleteIcon from '@/assets/icon-delete.svg';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
 
 import { Invoice, InvoiceFormProps } from '@/types';
 import { FC, useState } from 'react';
@@ -12,21 +11,24 @@ import { DrawerClose } from '@/components/ui/drawer';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format } from 'date-fns';
 import { invoiceService } from '@/services/invoice.service';
+import { ValidationErrors } from '@/types';
+import { validateInvoiceForm } from '@/utils/validations';
 
 const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
-  const navigate = useNavigate();
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
   const [formData, setFormData] = useState<Invoice>({
-    invoiceDate: '',
+    invoiceDate: '1900-01-01',
     description: '',
     paymentTerms: 0,
     clientName: '',
-    clientEmail: '',
+    clientEmail: 'client@mail.com',
     status: 'draft',
     senderAddress: { street: '', city: '', postCode: '', country: '' },
     clientAddress: { street: '', city: '', postCode: '', country: '' },
     items: [{ name: '', quantity: 0, price: 0 }],
   });
-  console.log(formData, 'formData');
 
   const [items, setItems] = useState([
     { id: uuidv4(), name: '', quantity: 0, price: 0 },
@@ -40,6 +42,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
     if (items.length > 1) {
       const updatedItems = items.filter((item) => item.id !== id);
       setItems(updatedItems);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const formDataItems = updatedItems.map(({ id, ...item }) => item);
       setFormData((prev) => ({
         ...prev,
@@ -52,11 +55,11 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
     const { id, value } = e.target;
 
     if (id.includes('.')) {
-      const [parentKey, childKey] = id.split('.');
+      const [parentKey, childKey] = id.split('.') as [keyof Invoice, string];
       setFormData((prev) => ({
         ...prev,
         [parentKey]: {
-          ...prev[parentKey],
+          ...(prev[parentKey] as Record<string, unknown>),
           [childKey]: value,
         },
       }));
@@ -88,15 +91,13 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
         : item
     );
     setItems(updatedItems);
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const formDataItems = updatedItems.map(({ id, ...item }) => item);
     setFormData((prev) => ({
       ...prev,
       items: formDataItems,
     }));
   };
-
-  console.log(items, 'items');
 
   const handleDateChange = (selectedDate: Date) => {
     setFormData((prev) => ({
@@ -105,10 +106,21 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    status: 'draft' | 'pending'
+  ) => {
     e.preventDefault();
+    if (status === 'pending') {
+      const [isValid, errors] = validateInvoiceForm(formData);
+      if (!isValid) {
+        setValidationErrors(errors);
+        return;
+      }
+    }
     try {
       await invoiceService.addInvoice(formData);
+      setValidationErrors({});
     } catch (error) {
       console.error('Error adding invoice:', error);
     }
@@ -117,7 +129,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   return (
     <Card className="md:w-full border-none bg-background p-0 shadow-none">
       <CardContent>
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-8">
           {/* Bill From Section */}
           <div className="space-y-4">
             <h3 className="text-md text-primary-purple font-bold">Bill From</h3>
@@ -130,11 +142,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Street Address
                 </Label>
                 <Input
-                  className="text-foreground font-bold"
+                  className={`text-foreground font-bold ${
+                    validationErrors.senderAddress?.street
+                      ? 'border-red-500'
+                      : ''
+                  }`}
                   id="senderAddress.street"
                   placeholder="19 Union Terrace"
                   onChange={handleInputChange}
                 />
+                {validationErrors.senderAddress?.street && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.senderAddress?.street}
+                  </span>
+                )}
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
@@ -145,11 +166,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     City
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.senderAddress?.city
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="senderAddress.city"
                     placeholder="London"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.senderAddress?.city && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.senderAddress?.city}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <Label
@@ -159,11 +189,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     Post Code
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.senderAddress?.postCode
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="senderAddress.postCode"
                     placeholder="E1 3EZ"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.senderAddress?.postCode && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.senderAddress?.postCode}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <Label
@@ -173,11 +212,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     Country
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.senderAddress?.country
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="senderAddress.country"
                     placeholder="United Kingdom"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.senderAddress?.country && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.senderAddress?.country}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -195,11 +243,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Client's Name
                 </Label>
                 <Input
-                  className="text-foreground font-bold"
+                  className={`text-foreground font-bold ${
+                    validationErrors.clientName ? 'border-red-500' : ''
+                  }`}
                   id="clientName"
                   placeholder="Alex Grim"
                   onChange={handleInputChange}
                 />
+                {validationErrors.clientName && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.clientName}
+                  </span>
+                )}
               </div>
               <div>
                 <Label
@@ -209,11 +264,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Client's Email
                 </Label>
                 <Input
-                  className="text-foreground font-bold"
+                  className={`text-foreground font-bold ${
+                    validationErrors.clientEmail ? 'border-red-500' : ''
+                  }`}
                   id="clientEmail"
                   placeholder="alexgrim@mail.com"
                   onChange={handleInputChange}
                 />
+                {validationErrors.clientEmail && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.clientEmail}
+                  </span>
+                )}
               </div>
               <div>
                 <Label
@@ -223,11 +285,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Street Address
                 </Label>
                 <Input
-                  className="text-foreground font-bold"
+                  className={`text-foreground font-bold ${
+                    validationErrors.clientAddress?.street
+                      ? 'border-red-500'
+                      : ''
+                  }`}
                   id="clientAddress.street"
                   placeholder="84 Church Way"
                   onChange={handleInputChange}
                 />
+                {validationErrors.clientAddress?.street && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.clientAddress?.street}
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-3 gap-4">
@@ -239,11 +310,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     City
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.clientAddress?.city
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="clientAddress.city"
                     placeholder="Bradford"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.clientAddress?.city && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.clientAddress?.city}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <Label
@@ -253,11 +333,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     Post Code
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.clientAddress?.postCode
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="clientAddress.postCode"
                     placeholder="BD1 9PB"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.clientAddress?.postCode && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.clientAddress?.postCode}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <Label
@@ -267,11 +356,20 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                     Country
                   </Label>
                   <Input
-                    className="text-foreground font-bold"
+                    className={`text-foreground font-bold ${
+                      validationErrors.clientAddress?.country
+                        ? 'border-red-500'
+                        : ''
+                    }`}
                     id="clientAddress.country"
                     placeholder="United Kingdom"
                     onChange={handleInputChange}
                   />
+                  {validationErrors.clientAddress?.country && (
+                    <span className="text-red-500 text-sm mt-1">
+                      {validationErrors.clientAddress?.country}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -288,6 +386,11 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Invoice Date
                 </Label>
                 <DatePicker handleDateChange={handleDateChange} />
+                {validationErrors.invoiceDate && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.invoiceDate}
+                  </span>
+                )}
               </div>
               <div>
                 <Label
@@ -297,11 +400,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   Payment Terms
                 </Label>
                 <Input
-                  className="text-foreground font-bold"
+                  className={`text-foreground font-bold ${
+                    validationErrors.paymentTerms ? 'border-red-500' : ''
+                  }`}
                   id="paymentTerms"
                   placeholder="Net 30 Days"
                   onChange={handleInputChange}
                 />
+                {validationErrors.paymentTerms && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {validationErrors.paymentTerms}
+                  </span>
+                )}
               </div>
             </div>
             <div>
@@ -312,11 +422,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 Project Description
               </Label>
               <Input
-                className="text-foreground font-bold"
+                className={`text-foreground font-bold ${
+                  validationErrors.description ? 'border-red-500' : ''
+                }`}
                 id="description"
                 placeholder="Graphic Design"
                 onChange={handleInputChange}
               />
+              {validationErrors.description && (
+                <span className="text-red-500 text-sm mt-1">
+                  {validationErrors.description}
+                </span>
+              )}
             </div>
           </div>
 
@@ -388,8 +505,18 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   />
                 </div>
               ))}
+              {validationErrors.items && (
+                <span className="text-red-500 text-sm mt-1">
+                  {validationErrors.items}
+                </span>
+              )}
             </div>
-            <Button variant="outline" className="w-full" onClick={addItem}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={addItem}
+            >
               + Add New Item
             </Button>
           </div>
@@ -401,15 +528,30 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 <DrawerClose asChild>
                   <Button variant="destructive">Cancel</Button>
                 </DrawerClose>
-                <Button variant="custom">Save Changes</Button>
+                <Button
+                  variant="custom"
+                  onClick={(e) => handleSubmit(e, 'pending')}
+                >
+                  Save Changes
+                </Button>
               </>
             ) : (
               <>
                 <DrawerClose asChild>
                   <Button variant="destructive">Discard</Button>
                 </DrawerClose>
-                <Button variant="secondary">Save As Draft</Button>
-                <Button variant="custom">Save & Send</Button>
+                <Button
+                  variant="secondary"
+                  onClick={(e) => handleSubmit(e, 'draft')}
+                >
+                  Save As Draft
+                </Button>
+                <Button
+                  variant="custom"
+                  onClick={(e) => handleSubmit(e, 'pending')}
+                >
+                  Save & Send
+                </Button>
               </>
             )}
           </div>
