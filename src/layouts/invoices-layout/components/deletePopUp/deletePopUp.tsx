@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC } from "react";
 import {
   Dialog,
   DialogClose,
@@ -8,22 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { DeletePopUpProps } from '@/types';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
-import { invoiceService } from '@/services/invoice.service';
+} from "@/components/ui/dialog";
+import { DeletePopUpProps } from "@/types";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useDeleteInvoice } from "@/hooks/useInvoices";
 
 const DeletePopUp: FC<DeletePopUpProps> = ({ createdId, id }) => {
   const navigate = useNavigate();
+  const deleteInvoiceMutation = useDeleteInvoice();
 
   const handleDelete = async () => {
     try {
-      await invoiceService.deleteInvoice(id);
-      navigate('/invoices');
+      await deleteInvoiceMutation.mutateAsync(id as string);
+      navigate("/invoices");
     } catch (error) {
-      console.error('Error deleting invoice:', error);
-      alert('Failed to delete invoice. Please try again.');
+      console.error("Error deleting invoice:", error);
     }
   };
 

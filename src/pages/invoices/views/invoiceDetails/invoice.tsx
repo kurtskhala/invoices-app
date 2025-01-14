@@ -1,60 +1,59 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import LeftArrow from '@/assets/icon-arrow-left.svg';
-import { Badge } from '@/components/ui/badge';
-import { Invoice as InvoiceType } from '@/types';
-import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
-import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
-import { invoiceService } from '@/services/invoice.service';
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import LeftArrow from "@/assets/icon-arrow-left.svg";
+import { Badge } from "@/components/ui/badge";
+import DeletePopUp from "@/layouts/invoices-layout/components/deletePopUp";
+import EditAddDialog from "@/layouts/invoices-layout/components/editAddInvoice";
+import { useInvoice, useUpdateInvoiceStatus } from "@/hooks/useInvoices";
+import { useToast } from "@/hooks/use-toast";
 
 const Invoice = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   const navigate = useNavigate();
-  const [invoice, setInvoice] = useState<InvoiceType>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchInvoice = async () => {
-      if (!id) return;
-      try {
-        const data = await invoiceService.getInvoice(id);
-        setInvoice(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: invoice, isLoading, error } = useInvoice(id as string);
 
-    fetchInvoice();
-  }, [id]);
+  const updateStatusMutation = useUpdateInvoiceStatus();
 
   const handleGoBack = () => {
-    navigate('/invoices');
+    navigate("/invoices");
   };
 
   const handleMarkAsPaid = async () => {
     if (!invoice?._id) return;
     try {
-      const updatedInvoice = await invoiceService.updateInvoiceStatus(
-        invoice._id,
-        'paid'
+      await updateStatusMutation.mutateAsync(
+        { id: invoice._id, status: "paid" },
+        {
+          onSuccess: () => {
+            toast({
+              title: "Success",
+              description: "Invoice marked as paid",
+            });
+          },
+          onError: () => {
+            toast({
+              title: "Error",
+              description: "Failed to update invoice status",
+              variant: "destructive",
+            });
+          },
+        }
       );
-      setInvoice(updatedInvoice);
     } catch (error) {
-      console.error('Error updating invoice:', error);
-      alert('Failed to update invoice status. Please try again.');
+      console.error("Error updating invoice:", error);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <p>Error: Failed to load invoice details. Please try again later.</p>
+    );
   }
 
   return (
@@ -76,13 +75,16 @@ const Invoice = () => {
               id={invoice?._id}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            {invoice?.status === 'pending' && (
+            {invoice?.status === "pending" && (
               <Button
                 className="text-[9px] sm:text-[15px]"
                 variant="custom"
                 onClick={handleMarkAsPaid}
+                disabled={updateStatusMutation.isPending}
               >
-                Mark as Paid
+                {updateStatusMutation.isPending
+                  ? "Updating..."
+                  : "Mark as Paid"}
               </Button>
             )}
           </div>
@@ -161,9 +163,9 @@ const Invoice = () => {
             <div className="bg-foreground text-background mt-8 p-6 rounded-lg flex justify-between items-center">
               <p>Amount Due</p>
               <p className="text-2xl font-bold">
-                £{' '}
+                £
                 {invoice?.items
-                  .reduce((acc, item) => acc + item.total, 0)
+                  .reduce((acc, item) => acc + item.quantity * item.price, 0)
                   .toFixed(2)}
               </p>
             </div>
