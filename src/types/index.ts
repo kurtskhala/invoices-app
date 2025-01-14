@@ -3,7 +3,7 @@ export interface Invoice {
   id?: string;
   createdAt?: string;
   invoiceDate: string;
-  paymentDue: string;
+  paymentDue?: string;
   description: string;
   paymentTerms: number;
   clientName: string;
@@ -27,7 +27,7 @@ export interface Invoice {
     price: number;
     total?: number;
   }[];
-  total: number;
+  total?: number;
 }
 
 export interface ValidationErrors {

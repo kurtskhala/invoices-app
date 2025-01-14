@@ -10,16 +10,19 @@ import { FC, useState } from 'react';
 import { DrawerClose } from '@/components/ui/drawer';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format } from 'date-fns';
-import { invoiceService } from '@/services/invoice.service';
 import { ValidationErrors } from '@/types';
 import { validateInvoiceForm } from '@/utils/validations';
+import { useAddInvoice } from '@/hooks/useInvoices';
 
 const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
+
+  const addInvoiceMutation = useAddInvoice();
+
   const [formData, setFormData] = useState<Invoice>({
-    invoiceDate: '1900-01-01',
+    invoiceDate: new Date().toISOString().split('T')[0],
     description: '',
     paymentTerms: 0,
     clientName: '',
@@ -111,18 +114,21 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
     status: 'draft' | 'pending'
   ) => {
     e.preventDefault();
+    const updatedFormData = {
+      ...formData,
+      status,
+    };
     if (status === 'pending') {
-      const [isValid, errors] = validateInvoiceForm(formData);
+      const [isValid, errors] = validateInvoiceForm(updatedFormData);
       if (!isValid) {
         setValidationErrors(errors);
         return;
       }
     }
     try {
-      await invoiceService.addInvoice(formData);
-      setValidationErrors({});
+      await addInvoiceMutation.mutateAsync(updatedFormData);
     } catch (error) {
-      console.error('Error adding invoice:', error);
+      console.error('Error deleting invoice:', error);
     }
   };
 
@@ -540,13 +546,17 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 <DrawerClose asChild>
                   <Button variant="destructive">Discard</Button>
                 </DrawerClose>
+                <DrawerClose asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={(e) => handleSubmit(e, 'draft')}
+                  >
+                    Save As Draft
+                  </Button>
+                </DrawerClose>
                 <Button
-                  variant="secondary"
-                  onClick={(e) => handleSubmit(e, 'draft')}
-                >
-                  Save As Draft
-                </Button>
-                <Button
+                  type="button"
                   variant="custom"
                   onClick={(e) => handleSubmit(e, 'pending')}
                 >

@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import DownArrow from "@/assets/icon-arrow-down.svg";
-import Empty from "@/assets/illustration-empty.svg";
+import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DownArrow from '@/assets/icon-arrow-down.svg';
+import Empty from '@/assets/illustration-empty.svg';
 
 import {
   DropdownMenu,
@@ -9,19 +9,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Invoice } from "@/types";
-import InvoiceListItem from "@/layouts/invoices-layout/components/invoiceListItem";
-import EditAddDialog from "@/layouts/invoices-layout/components/editAddInvoice";
-import { useInvoices } from "@/hooks/useInvoices";
+} from '@/components/ui/dropdown-menu';
+import { Invoice } from '@/types';
+import InvoiceListItem from '@/layouts/invoices-layout/components/invoiceListItem';
+import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
+import { useInvoices } from '@/hooks/useInvoices';
 
 const Invoices = () => {
   const navigate = useNavigate();
 
   const { data: invoices = [], isLoading, error } = useInvoices();
-  const [statusFilter, setStatusFilter] = useState<string>("");
-
-  console.log(invoices, "invoices");
+  const [statusFilter, setStatusFilter] = useState<string>('');
 
   const handleInvoiceClick = (invoice: Invoice) => {
     navigate(`/invoices/${invoice._id}`, {
@@ -30,7 +28,7 @@ const Invoices = () => {
   };
 
   const filteredInvoices = useMemo(() => {
-    if (statusFilter === "") return invoices;
+    if (statusFilter === '') return invoices;
     return invoices.filter((invoice) => invoice.status === statusFilter);
   }, [statusFilter, invoices]);
 
@@ -55,7 +53,7 @@ const Invoices = () => {
           <p className="text-muted-foreground opacity-55">
             {invoices.length
               ? `There are ${invoices.length} total invoice(s)`
-              : "No invoices"}
+              : 'No invoices'}
           </p>
         </div>
 
@@ -67,17 +65,17 @@ const Invoices = () => {
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleFilter("")}>
+              <DropdownMenuItem onClick={() => handleFilter('')}>
                 Clear All
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleFilter("paid")}>
+              <DropdownMenuItem onClick={() => handleFilter('paid')}>
                 Paid
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleFilter("pending")}>
+              <DropdownMenuItem onClick={() => handleFilter('pending')}>
                 Pending
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleFilter("draft")}>
+              <DropdownMenuItem onClick={() => handleFilter('draft')}>
                 Draft
               </DropdownMenuItem>
             </DropdownMenuContent>

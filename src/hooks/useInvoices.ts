@@ -1,11 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Invoice } from "@/types";
-import { invoiceService } from "@/services/invoice.service";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Invoice } from '@/types';
+import { invoiceService } from '@/services/invoice.service';
 
 // Query keys
 export const invoiceKeys = {
-  all: ["invoices"] as const,
-  details: (id: string) => ["invoice", id] as const,
+  all: ['invoices'] as const,
+  details: (id: string) => ['invoice', id] as const,
 };
 
 // Hooks
@@ -28,7 +28,13 @@ export function useAddInvoice() {
 
   return useMutation({
     mutationFn: (invoice: Invoice) => invoiceService.addInvoice(invoice),
-    onSuccess: () => {
+    onSuccess: (newInvoice) => {
+      queryClient.setQueryData(
+        invoiceKeys.all,
+        (oldInvoices: Invoice[] | undefined) => {
+          return oldInvoices ? [...oldInvoices, newInvoice] : [newInvoice];
+        }
+      );
       queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
     },
   });
@@ -52,8 +58,16 @@ export function useDeleteInvoice() {
 
   return useMutation({
     mutationFn: (id: string) => invoiceService.deleteInvoice(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+    onSuccess: (_, id) => {
+      queryClient.setQueryData(
+        invoiceKeys.all,
+        (oldInvoices: Invoice[] | undefined) => {
+          return oldInvoices
+            ? oldInvoices.filter((invoice) => invoice.id !== id)
+            : [];
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
     },
   });
 }
