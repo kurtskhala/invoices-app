@@ -14,28 +14,34 @@ import { ValidationErrors } from "@/types";
 import { validateInvoiceForm } from "@/utils/validations";
 import { useAddInvoice } from "@/hooks/useInvoices";
 
-const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
+const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
+  console.log(id);
+
+  const initialFormData: Invoice =
+    action === "edit" && invoice
+      ? invoice
+      : {
+          invoiceDate: new Date().toISOString().split("T")[0],
+          description: "",
+          paymentTerms: 0,
+          clientName: "",
+          clientEmail: "client@mail.com",
+          status: "draft",
+          senderAddress: { street: "", city: "", postCode: "", country: "" },
+          clientAddress: { street: "", city: "", postCode: "", country: "" },
+          items: [{ name: "", quantity: 0, price: 0 }],
+        };
 
   const addInvoiceMutation = useAddInvoice();
 
-  const [formData, setFormData] = useState<Invoice>({
-    invoiceDate: new Date().toISOString().split("T")[0],
-    description: "",
-    paymentTerms: 0,
-    clientName: "",
-    clientEmail: "client@mail.com",
-    status: "draft",
-    senderAddress: { street: "", city: "", postCode: "", country: "" },
-    clientAddress: { street: "", city: "", postCode: "", country: "" },
-    items: [{ name: "", quantity: 0, price: 0 }],
-  });
+  const [formData, setFormData] = useState<Invoice>(initialFormData);
 
-  const [items, setItems] = useState([
-    { id: uuidv4(), name: "", quantity: 0, price: 0 },
-  ]);
+  const [items, setItems] = useState(
+    initialFormData.items.map((item) => ({ ...item, id: uuidv4() }))
+  );
 
   const addItem = () => {
     setItems([...items, { id: uuidv4(), name: "", quantity: 0, price: 0 }]);
@@ -128,7 +134,11 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
       }
     }
     try {
-      await addInvoiceMutation.mutateAsync(updatedFormData);
+      if (action === "add") {
+        await addInvoiceMutation.mutateAsync(updatedFormData);
+      } else if (action === "edit") {
+        console.log("editing", updatedFormData);
+      }
       closeRef.current?.click();
     } catch (error) {
       console.error("Error deleting invoice:", error);
@@ -526,13 +536,13 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
               className="w-full"
               onClick={addItem}
             >
-              + Add New Item
+              + add New Item
             </Button>
           </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4">
-            {action === "Edit" ? (
+            {action === "edit" ? (
               <>
                 <DrawerClose asChild>
                   <Button variant="destructive">Cancel</Button>

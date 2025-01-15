@@ -81,7 +81,7 @@ const Invoices = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <EditAddDialog action="New Invoice"></EditAddDialog>
+          <EditAddDialog action="add"></EditAddDialog>
         </div>
       </div>
 

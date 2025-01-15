@@ -70,9 +70,10 @@ const Invoice = () => {
           </div>
           <div className="flex justify-between items-center gap-x-[10px]">
             <EditAddDialog
-              action="Edit"
+              action="edit"
               createdId={invoice?.id}
               id={invoice?._id}
+              invoice={invoice}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
             {invoice?.status === "pending" && (
