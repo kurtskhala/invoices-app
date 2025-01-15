@@ -1,18 +1,18 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@radix-ui/react-label';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import deleteIcon from '@/assets/icon-delete.svg';
-import { v4 as uuidv4 } from 'uuid';
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import deleteIcon from "@/assets/icon-delete.svg";
+import { v4 as uuidv4 } from "uuid";
 
-import { Invoice, InvoiceFormProps } from '@/types';
-import { FC, useState } from 'react';
-import { DrawerClose } from '@/components/ui/drawer';
-import { DatePicker } from '@/components/ui/date-picker';
-import { format } from 'date-fns';
-import { ValidationErrors } from '@/types';
-import { validateInvoiceForm } from '@/utils/validations';
-import { useAddInvoice } from '@/hooks/useInvoices';
+import { Invoice, InvoiceFormProps } from "@/types";
+import { FC, useState, useRef } from "react";
+import { DrawerClose } from "@/components/ui/drawer";
+import { DatePicker } from "@/components/ui/date-picker";
+import { format } from "date-fns";
+import { ValidationErrors } from "@/types";
+import { validateInvoiceForm } from "@/utils/validations";
+import { useAddInvoice } from "@/hooks/useInvoices";
 
 const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
@@ -22,23 +22,23 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   const addInvoiceMutation = useAddInvoice();
 
   const [formData, setFormData] = useState<Invoice>({
-    invoiceDate: new Date().toISOString().split('T')[0],
-    description: '',
+    invoiceDate: new Date().toISOString().split("T")[0],
+    description: "",
     paymentTerms: 0,
-    clientName: '',
-    clientEmail: 'client@mail.com',
-    status: 'draft',
-    senderAddress: { street: '', city: '', postCode: '', country: '' },
-    clientAddress: { street: '', city: '', postCode: '', country: '' },
-    items: [{ name: '', quantity: 0, price: 0 }],
+    clientName: "",
+    clientEmail: "client@mail.com",
+    status: "draft",
+    senderAddress: { street: "", city: "", postCode: "", country: "" },
+    clientAddress: { street: "", city: "", postCode: "", country: "" },
+    items: [{ name: "", quantity: 0, price: 0 }],
   });
 
   const [items, setItems] = useState([
-    { id: uuidv4(), name: '', quantity: 0, price: 0 },
+    { id: uuidv4(), name: "", quantity: 0, price: 0 },
   ]);
 
   const addItem = () => {
-    setItems([...items, { id: uuidv4(), name: '', quantity: 0, price: 0 }]);
+    setItems([...items, { id: uuidv4(), name: "", quantity: 0, price: 0 }]);
   };
 
   const removeItem = (id: string) => {
@@ -57,8 +57,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
 
-    if (id.includes('.')) {
-      const [parentKey, childKey] = id.split('.') as [keyof Invoice, string];
+    if (id.includes(".")) {
+      const [parentKey, childKey] = id.split(".") as [keyof Invoice, string];
       setFormData((prev) => ({
         ...prev,
         [parentKey]: {
@@ -66,7 +66,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
           [childKey]: value,
         },
       }));
-    } else if (id === 'paymentTerms') {
+    } else if (id === "paymentTerms") {
       setFormData((prev) => ({
         ...prev,
         [id]: Number(value),
@@ -89,7 +89,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
         ? {
             ...item,
             [field]:
-              field === 'quantity' || field === 'price' ? Number(value) : value,
+              field === "quantity" || field === "price" ? Number(value) : value,
           }
         : item
     );
@@ -105,20 +105,22 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
   const handleDateChange = (selectedDate: Date) => {
     setFormData((prev) => ({
       ...prev,
-      invoiceDate: format(selectedDate, 'yyyy-MM-dd'),
+      invoiceDate: format(selectedDate, "yyyy-MM-dd"),
     }));
   };
 
+  const closeRef = useRef<HTMLButtonElement>(null);
+
   const handleSubmit = async (
     e: React.FormEvent,
-    status: 'draft' | 'pending'
+    status: "draft" | "pending"
   ) => {
     e.preventDefault();
     const updatedFormData = {
       ...formData,
       status,
     };
-    if (status === 'pending') {
+    if (status === "pending") {
       const [isValid, errors] = validateInvoiceForm(updatedFormData);
       if (!isValid) {
         setValidationErrors(errors);
@@ -127,8 +129,9 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
     }
     try {
       await addInvoiceMutation.mutateAsync(updatedFormData);
+      closeRef.current?.click();
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      console.error("Error deleting invoice:", error);
     }
   };
 
@@ -150,8 +153,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 <Input
                   className={`text-foreground font-bold ${
                     validationErrors.senderAddress?.street
-                      ? 'border-red-500'
-                      : ''
+                      ? "border-red-500"
+                      : ""
                   }`}
                   id="senderAddress.street"
                   placeholder="19 Union Terrace"
@@ -174,8 +177,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.senderAddress?.city
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="senderAddress.city"
                     placeholder="London"
@@ -197,8 +200,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.senderAddress?.postCode
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="senderAddress.postCode"
                     placeholder="E1 3EZ"
@@ -220,8 +223,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.senderAddress?.country
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="senderAddress.country"
                     placeholder="United Kingdom"
@@ -250,7 +253,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 </Label>
                 <Input
                   className={`text-foreground font-bold ${
-                    validationErrors.clientName ? 'border-red-500' : ''
+                    validationErrors.clientName ? "border-red-500" : ""
                   }`}
                   id="clientName"
                   placeholder="Alex Grim"
@@ -271,7 +274,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 </Label>
                 <Input
                   className={`text-foreground font-bold ${
-                    validationErrors.clientEmail ? 'border-red-500' : ''
+                    validationErrors.clientEmail ? "border-red-500" : ""
                   }`}
                   id="clientEmail"
                   placeholder="alexgrim@mail.com"
@@ -293,8 +296,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 <Input
                   className={`text-foreground font-bold ${
                     validationErrors.clientAddress?.street
-                      ? 'border-red-500'
-                      : ''
+                      ? "border-red-500"
+                      : ""
                   }`}
                   id="clientAddress.street"
                   placeholder="84 Church Way"
@@ -318,8 +321,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.clientAddress?.city
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="clientAddress.city"
                     placeholder="Bradford"
@@ -341,8 +344,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.clientAddress?.postCode
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="clientAddress.postCode"
                     placeholder="BD1 9PB"
@@ -364,8 +367,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Input
                     className={`text-foreground font-bold ${
                       validationErrors.clientAddress?.country
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }`}
                     id="clientAddress.country"
                     placeholder="United Kingdom"
@@ -407,7 +410,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 </Label>
                 <Input
                   className={`text-foreground font-bold ${
-                    validationErrors.paymentTerms ? 'border-red-500' : ''
+                    validationErrors.paymentTerms ? "border-red-500" : ""
                   }`}
                   id="paymentTerms"
                   placeholder="Net 30 Days"
@@ -429,7 +432,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
               </Label>
               <Input
                 className={`text-foreground font-bold ${
-                  validationErrors.description ? 'border-red-500' : ''
+                  validationErrors.description ? "border-red-500" : ""
                 }`}
                 id="description"
                 placeholder="Graphic Design"
@@ -461,7 +464,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                       placeholder="Banner Design"
                       value={item.name}
                       onChange={(e) =>
-                        handleItemChange(item.id, 'name', e.target.value)
+                        handleItemChange(item.id, "name", e.target.value)
                       }
                     />
                   </div>
@@ -474,7 +477,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                       type="number"
                       placeholder="1"
                       onChange={(e) =>
-                        handleItemChange(item.id, 'quantity', e.target.value)
+                        handleItemChange(item.id, "quantity", e.target.value)
                       }
                     />
                   </div>
@@ -487,7 +490,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                       type="number"
                       placeholder="156.00"
                       onChange={(e) =>
-                        handleItemChange(item.id, 'price', e.target.value)
+                        handleItemChange(item.id, "price", e.target.value)
                       }
                     />
                   </div>
@@ -503,7 +506,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   </div>
                   <img
                     className={`col-span-2 pt-4 ${
-                      items.length > 1 ? 'opacity-100' : 'opacity-50'
+                      items.length > 1 ? "opacity-100" : "opacity-50"
                     }`}
                     src={deleteIcon}
                     alt="delete icon"
@@ -529,14 +532,14 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4">
-            {action === 'Edit' ? (
+            {action === "Edit" ? (
               <>
                 <DrawerClose asChild>
                   <Button variant="destructive">Cancel</Button>
                 </DrawerClose>
                 <Button
                   variant="custom"
-                  onClick={(e) => handleSubmit(e, 'pending')}
+                  onClick={(e) => handleSubmit(e, "pending")}
                 >
                   Save Changes
                 </Button>
@@ -550,7 +553,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={(e) => handleSubmit(e, 'draft')}
+                    onClick={(e) => handleSubmit(e, "draft")}
                   >
                     Save As Draft
                   </Button>
@@ -558,7 +561,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
                 <Button
                   type="button"
                   variant="custom"
-                  onClick={(e) => handleSubmit(e, 'pending')}
+                  onClick={(e) => handleSubmit(e, "pending")}
                 >
                   Save & Send
                 </Button>
@@ -566,6 +569,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action }) => {
             )}
           </div>
         </form>
+        <DrawerClose ref={closeRef} className="hidden" />
       </CardContent>
     </Card>
   );
