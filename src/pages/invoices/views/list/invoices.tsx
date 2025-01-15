@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DownArrow from '@/assets/icon-arrow-down.svg';
 import Empty from '@/assets/illustration-empty.svg';
@@ -13,14 +13,13 @@ import {
 import { Invoice } from '@/types';
 import InvoiceListItem from '@/layouts/invoices-layout/components/invoiceListItem';
 import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
-import { invoiceService } from '@/services/invoice.service';
+import { useInvoices } from '@/hooks/useInvoices';
 
 const Invoices = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<Invoice[]>([]);
+
+  const { data: invoices = [], isLoading, error } = useInvoices();
   const [statusFilter, setStatusFilter] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const handleInvoiceClick = (invoice: Invoice) => {
     navigate(`/invoices/${invoice._id}`, {
@@ -28,36 +27,21 @@ const Invoices = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchInvoices = async () => {
-      try {
-        const data = await invoiceService.getAllInvoices();
-        setData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInvoices();
-  }, []);
-
   const filteredInvoices = useMemo(() => {
-    if (statusFilter === '') return data;
-    return data.filter((invoice) => invoice.status === statusFilter);
-  }, [statusFilter, data]);
+    if (statusFilter === '') return invoices;
+    return invoices.filter((invoice) => invoice.status === statusFilter);
+  }, [statusFilter, invoices]);
 
   const handleFilter = (status: string) => {
     setStatusFilter(status);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p>Error: Failed to load invoices. Please try again later.</p>;
   }
 
   return (
@@ -67,8 +51,8 @@ const Invoices = () => {
         <div className="flex flex-col">
           <p className="text-3xl font-bold">Invoices</p>
           <p className="text-muted-foreground opacity-55">
-            {data.length
-              ? `There are ${data.length} total invoice(s)`
+            {invoices.length
+              ? `There are ${invoices.length} total invoice(s)`
               : 'No invoices'}
           </p>
         </div>
@@ -102,7 +86,7 @@ const Invoices = () => {
       </div>
 
       {/* Body */}
-      {data.length ? (
+      {invoices.length ? (
         <div className="max-h-[60vh] custom-scrollbar overflow-auto lg:w-[780px] md:w-[560px] flex flex-col gap-y-4 mb-5">
           {filteredInvoices.map((item) => (
             <InvoiceListItem

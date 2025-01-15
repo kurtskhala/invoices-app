@@ -9,8 +9,6 @@ const Header = () => {
   const [isDark, setIsDark] = useState(false);
 
   const handleChangeTheme = () => {
-    console.log(isDark);
-
     const html = document.querySelector('html');
     if (!isDark) {
       html?.classList.add('dark');

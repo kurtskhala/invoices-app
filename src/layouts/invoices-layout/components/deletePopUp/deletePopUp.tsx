@@ -12,18 +12,18 @@ import {
 import { DeletePopUpProps } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { invoiceService } from '@/services/invoice.service';
+import { useDeleteInvoice } from '@/hooks/useInvoices';
 
 const DeletePopUp: FC<DeletePopUpProps> = ({ createdId, id }) => {
   const navigate = useNavigate();
+  const deleteInvoiceMutation = useDeleteInvoice();
 
   const handleDelete = async () => {
     try {
-      await invoiceService.deleteInvoice(id);
+      await deleteInvoiceMutation.mutateAsync(id as string);
       navigate('/invoices');
     } catch (error) {
       console.error('Error deleting invoice:', error);
-      alert('Failed to delete invoice. Please try again.');
     }
   };
 
