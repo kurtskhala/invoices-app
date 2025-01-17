@@ -1,7 +1,7 @@
-import { Invoice } from "@/types";
-import { authService } from "./auth.service";
+import { Invoice } from '@/types';
+import { authService } from './auth.service';
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = 'http://localhost:3000';
 
 export const invoiceService = {
   async getInvoice(id: string): Promise<Invoice> {
@@ -9,7 +9,7 @@ export const invoiceService = {
       `${BASE_URL}/invoices/${id}`
     );
     if (!response.ok) {
-      throw new Error("Failed to fetch invoice");
+      throw new Error('Failed to fetch invoice');
     }
     return response.json();
   },
@@ -18,15 +18,32 @@ export const invoiceService = {
     const response = await authService.fetchWithAuth(
       `${BASE_URL}/invoices/${id}`,
       {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status }),
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to update invoice");
+      throw new Error('Failed to update invoice');
+    }
+    return response.json();
+  },
+
+  async updateInvoice(id: string, data: Partial<Invoice>): Promise<Invoice> {
+    const response = await authService.fetchWithAuth(
+      `${BASE_URL}/invoices/${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to update invoice');
     }
     return response.json();
   },
@@ -34,22 +51,22 @@ export const invoiceService = {
   async getAllInvoices(): Promise<Invoice[]> {
     const response = await authService.fetchWithAuth(`${BASE_URL}/invoices`);
     if (!response.ok) {
-      throw new Error("Failed to fetch invoices");
+      throw new Error('Failed to fetch invoices');
     }
     return response.json();
   },
 
   async addInvoice(data: Invoice): Promise<Invoice> {
     const response = await authService.fetchWithAuth(`${BASE_URL}/invoices`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to add invoice");
+      throw new Error('Failed to add invoice');
     }
     return response.json();
   },
@@ -58,11 +75,11 @@ export const invoiceService = {
     const response = await authService.fetchWithAuth(
       `${BASE_URL}/invoices/${id}`,
       {
-        method: "DELETE",
+        method: 'DELETE',
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to delete invoice");
+      throw new Error('Failed to delete invoice');
     }
   },
 };

@@ -53,6 +53,30 @@ export function useUpdateInvoiceStatus() {
   });
 }
 
+export function useUpdateInvoice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Invoice> }) =>
+      invoiceService.updateInvoice(id, data),
+    onSuccess: (updatedInvoice, { id }) => {
+      queryClient.setQueryData(invoiceKeys.details(id), updatedInvoice);
+      queryClient.setQueryData(
+        invoiceKeys.all,
+        (oldInvoices: Invoice[] | undefined) => {
+          return oldInvoices
+            ? oldInvoices.map((invoice) =>
+                invoice.id === id ? updatedInvoice : invoice
+              )
+            : [updatedInvoice];
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.details(id) });
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
+    },
+  });
+}
+
 export function useDeleteInvoice() {
   const queryClient = useQueryClient();
 

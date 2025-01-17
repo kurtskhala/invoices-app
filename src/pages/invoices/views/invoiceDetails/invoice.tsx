@@ -1,11 +1,12 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import LeftArrow from "@/assets/icon-arrow-left.svg";
-import { Badge } from "@/components/ui/badge";
-import DeletePopUp from "@/layouts/invoices-layout/components/deletePopUp";
-import EditAddDialog from "@/layouts/invoices-layout/components/editAddInvoice";
-import { useInvoice, useUpdateInvoiceStatus } from "@/hooks/useInvoices";
-import { useToast } from "@/hooks/use-toast";
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import LeftArrow from '@/assets/icon-arrow-left.svg';
+import { Badge } from '@/components/ui/badge';
+import DeletePopUp from '@/layouts/invoices-layout/components/deletePopUp';
+import EditAddDialog from '@/layouts/invoices-layout/components/editAddInvoice';
+import { useInvoice, useUpdateInvoiceStatus } from '@/hooks/useInvoices';
+import { useToast } from '@/hooks/use-toast';
+import dayjs from 'dayjs';
 
 const Invoice = () => {
   const { id } = useParams();
@@ -17,32 +18,32 @@ const Invoice = () => {
   const updateStatusMutation = useUpdateInvoiceStatus();
 
   const handleGoBack = () => {
-    navigate("/invoices");
+    navigate('/invoices');
   };
 
   const handleMarkAsPaid = async () => {
     if (!invoice?._id) return;
     try {
       await updateStatusMutation.mutateAsync(
-        { id: invoice._id, status: "paid" },
+        { id: invoice._id, status: 'paid' },
         {
           onSuccess: () => {
             toast({
-              title: "Success",
-              description: "Invoice marked as paid",
+              title: 'Success',
+              description: 'Invoice marked as paid',
             });
           },
           onError: () => {
             toast({
-              title: "Error",
-              description: "Failed to update invoice status",
-              variant: "destructive",
+              title: 'Error',
+              description: 'Failed to update invoice status',
+              variant: 'destructive',
             });
           },
         }
       );
     } catch (error) {
-      console.error("Error updating invoice:", error);
+      console.error('Error updating invoice:', error);
     }
   };
 
@@ -76,7 +77,7 @@ const Invoice = () => {
               invoice={invoice}
             />
             <DeletePopUp createdId={invoice?.id} id={invoice?._id} />
-            {invoice?.status === "pending" && (
+            {invoice?.status === 'pending' && (
               <Button
                 className="text-[9px] sm:text-[15px]"
                 variant="custom"
@@ -84,8 +85,8 @@ const Invoice = () => {
                 disabled={updateStatusMutation.isPending}
               >
                 {updateStatusMutation.isPending
-                  ? "Updating..."
-                  : "Mark as Paid"}
+                  ? 'Updating...'
+                  : 'Mark as Paid'}
               </Button>
             )}
           </div>
@@ -109,11 +110,16 @@ const Invoice = () => {
             <div>
               <div className="mb-8">
                 <p className="text-muted-foreground mb-2">Invoice Date</p>
-                <p className="font-bold">{invoice?.createdAt}</p>
+                <p className="font-bold">{invoice?.invoiceDate}</p>
               </div>
               <div>
                 <p className="text-muted-foreground mb-2">Payment Due</p>
-                <p className="font-bold">{invoice?.paymentDue}</p>
+                <p className="font-bold">
+                  {' '}
+                  {invoice?.paymentDue
+                    ? dayjs(invoice.paymentDue).format('YYYY-MM-DD')
+                    : 'N/A'}
+                </p>
               </div>
             </div>
 
