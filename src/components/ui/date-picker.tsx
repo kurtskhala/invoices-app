@@ -9,14 +9,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function DatePicker({
   handleDateChange,
+  initialDate,
+  disabled,
 }: {
   handleDateChange: (date: Date) => void;
+  initialDate?: string;
+  disabled?: boolean;
 }) {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<Date | undefined>(
+    initialDate ? new Date(initialDate) : undefined
+  );
+
+  useEffect(() => {
+    if (initialDate) {
+      const newDate = new Date(initialDate);
+      setDate(newDate);
+    }
+  }, []);
 
   const onDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
@@ -27,7 +40,7 @@ export function DatePicker({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={disabled}>
         <Button
           variant={'outline'}
           className={cn(
@@ -43,7 +56,7 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={date}
-          onSelect={onDateSelect} 
+          onSelect={onDateSelect}
           initialFocus
         />
       </PopoverContent>

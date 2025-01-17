@@ -8,7 +8,7 @@ export interface Invoice {
   paymentTerms: number;
   clientName: string;
   clientEmail: string;
-  status: 'paid' | 'pending' | 'draft';
+  status: "paid" | "pending" | "draft";
   senderAddress: {
     street: string;
     city: string;
@@ -71,6 +71,7 @@ export interface DeletePopUpProps {
 export interface EditAddDialogProps {
   action: string;
   createdId?: string;
+  invoice?: Invoice;
   id?: string;
 }
 
@@ -81,6 +82,8 @@ export interface InvoiceListItemProps {
 
 export interface InvoiceFormProps {
   action: string;
+  id?: string;
+  invoice?: Invoice;
 }
 
 export interface CacheItem<T> {
