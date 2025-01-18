@@ -8,7 +8,7 @@ export interface Invoice {
   paymentTerms: number;
   clientName: string;
   clientEmail: string;
-  status: "paid" | "pending" | "draft";
+  status: 'paid' | 'pending' | 'draft';
   senderAddress: {
     street: string;
     city: string;
@@ -89,4 +89,9 @@ export interface InvoiceFormProps {
 export interface CacheItem<T> {
   data: T;
   timestamp: number;
+}
+
+export interface ProtectedRouteProps {
+  children: React.ReactNode;
+  redirectTo?: string;
 }
