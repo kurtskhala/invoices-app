@@ -6,11 +6,11 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center justify-center w-full">
+  <div className="flex items-center justify-center w-full p-20">
     <div
       ref={ref}
       className={cn(
-        'w-full md:w-96 mx-auto rounded-lg border bg-card text-card-foreground shadow-sm p-6',
+        'w-full md:w-96  mx-auto rounded-lg border bg-card text-card-foreground shadow-sm p-6',
         className
       )}
       {...props}

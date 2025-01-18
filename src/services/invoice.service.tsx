@@ -48,10 +48,24 @@ export const invoiceService = {
     return response.json();
   },
 
-  async getAllInvoices(): Promise<Invoice[]> {
-    const response = await authService.fetchWithAuth(`${BASE_URL}/invoices`);
+  // async getAllInvoices(): Promise<Invoice[]> {
+  //   const response = await authService.fetchWithAuth(`${BASE_URL}/invoices`);
+  //   if (!response.ok) {
+  //     throw new Error('Failed to fetch invoices');
+  //   }
+  //   return response.json();
+  // },
+  
+  async getInvoicesByUser(): Promise<Invoice[]> {
+    const userId = authService.getUserId();
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+    const response = await authService.fetchWithAuth(
+      `${BASE_URL}/invoices?userId=${userId}`
+    );
     if (!response.ok) {
-      throw new Error('Failed to fetch invoices');
+      throw new Error('Failed to fetch user invoices');
     }
     return response.json();
   },

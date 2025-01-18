@@ -12,7 +12,7 @@ export const invoiceKeys = {
 export function useInvoices() {
   return useQuery({
     queryKey: invoiceKeys.all,
-    queryFn: () => invoiceService.getAllInvoices(),
+    queryFn: () => invoiceService.getInvoicesByUser(),
   });
 }
 
