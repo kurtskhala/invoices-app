@@ -24,7 +24,7 @@ export const authService = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   login: async (email: string, password: string): Promise<any> => {
-    const response = await fetch('http://localhost:3000/auth/sign-in', {
+    const response = await fetch('https://shark-app-jk6jb.ondigitalocean.app/auth/sign-in', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const authService = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signup: async (data: SignUpData): Promise<any> => {
-    const response = await fetch('http://localhost:3000/auth/sign-up', {
+    const response = await fetch('https://shark-app-jk6jb.ondigitalocean.app/auth/sign-up', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

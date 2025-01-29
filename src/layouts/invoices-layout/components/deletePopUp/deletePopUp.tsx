@@ -46,8 +46,13 @@ const DeletePopUp: FC<DeletePopUpProps> = ({ createdId, id }) => {
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit" variant="destructive" onClick={handleDelete}>
-            Delete
+          <Button
+            type="submit"
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={deleteInvoiceMutation.isPending}
+          >
+            {deleteInvoiceMutation.isPending ? 'Deleting...' : 'Delete'}
           </Button>
         </DialogFooter>
       </DialogContent>

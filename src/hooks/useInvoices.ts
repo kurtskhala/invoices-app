@@ -91,7 +91,10 @@ export function useDeleteInvoice() {
             : [];
         }
       );
-      queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: invoiceKeys.all,
+        refetchType: 'active',
+      });
     },
   });
 }

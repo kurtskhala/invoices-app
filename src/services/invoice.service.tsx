@@ -1,7 +1,7 @@
 import { Invoice } from '@/types';
 import { authService } from './auth.service';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://shark-app-jk6jb.ondigitalocean.app';
 
 export const invoiceService = {
   async getInvoice(id: string): Promise<Invoice> {
