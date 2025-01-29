@@ -10,18 +10,21 @@ export interface Invoice {
   clientEmail: string;
   status: 'paid' | 'pending' | 'draft';
   senderAddress: {
+    _id?: string;
     street: string;
     city: string;
     postCode: string;
     country: string;
   };
   clientAddress: {
+    _id?: string;
     street: string;
     city: string;
     postCode: string;
     country: string;
   };
   items: {
+    _id?: string;
     name: string;
     quantity: number;
     price: number;
