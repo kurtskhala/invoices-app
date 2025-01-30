@@ -6,7 +6,7 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center justify-center w-full">
+  <div className="flex items-center justify-center w-full pt-6">
     <div
       ref={ref}
       className={cn(
