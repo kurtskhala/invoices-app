@@ -1,10 +1,11 @@
-import { lazy, Suspense } from 'react';
-import { Route } from 'react-router-dom';
-import { INVOICE_PATHS } from './index.enum';
+import { lazy, Suspense } from "react";
+import { Route } from "react-router-dom";
+import { INVOICE_PATHS } from "./index.enum";
+import AuthGuard from "@/components/route-guards/authGuard";
 
-const InvoiceView = lazy(() => import('@/pages/invoices/views/list'));
+const InvoiceView = lazy(() => import("@/pages/invoices/views/list"));
 const InvoiceDetail = lazy(
-  () => import('@/pages/invoices/views/invoiceDetails')
+  () => import("@/pages/invoices/views/invoiceDetails")
 );
 
 export const INVOICE_VIEW_ROUTE = [
@@ -13,7 +14,9 @@ export const INVOICE_VIEW_ROUTE = [
     path={INVOICE_PATHS.INVOICES}
     element={
       <Suspense fallback={<div>Loading...</div>}>
-        <InvoiceView />
+        <AuthGuard>
+          <InvoiceView />
+        </AuthGuard>
       </Suspense>
     }
   />,
@@ -22,7 +25,9 @@ export const INVOICE_VIEW_ROUTE = [
     path={INVOICE_PATHS.INVOICE}
     element={
       <Suspense fallback={<div>Loading...</div>}>
-        <InvoiceDetail />
+        <AuthGuard>
+          <InvoiceDetail />
+        </AuthGuard>
       </Suspense>
     }
   />,

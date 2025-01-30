@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { SignUpData } from '@/types';
 import { ProtectedRouteProps } from '@/types';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 const TOKEN_COOKIE_NAME = 'auth_token';
@@ -125,4 +125,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={redirectTo} replace />;
   }
   return children;
+};
+
+export const useLogout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remove the auth token cookie
+    Cookies.remove('auth_token', { path: '/' });
+    
+    // Redirect to sign in page
+    navigate('/signIn', { replace: true });
+  };
+
+  return handleLogout;
 };
