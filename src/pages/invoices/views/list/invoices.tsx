@@ -21,7 +21,6 @@ const Invoices = () => {
   const { data: invoices = [], isLoading, error } = useInvoices();
   const [statusFilter, setStatusFilter] = useState<string>('');
 
-  console.log(invoices, "invoices")
 
   const handleInvoiceClick = (invoice: Invoice) => {
     navigate(`/invoices/${invoice._id}`, {

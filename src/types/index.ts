@@ -5,10 +5,10 @@ export interface Invoice {
   invoiceDate: string;
   paymentDue?: string;
   description: string;
-  paymentTerms: number;
+  paymentTerms: number | string;
   clientName: string;
   clientEmail: string;
-  status: 'paid' | 'pending' | 'draft';
+  status: "paid" | "pending" | "draft";
   senderAddress: {
     _id?: string;
     street: string;
@@ -26,8 +26,8 @@ export interface Invoice {
   items: {
     _id?: string;
     name: string;
-    quantity: number;
-    price: number;
+    quantity: number | string;
+    price: number | string;
     total?: number;
   }[];
   total?: number;

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import moon from "@/assets/icon-moon.svg";
 import sun from "@/assets/icon-sun.svg";
 import logo from "@/assets/logo.svg";
-import avatar from "@/assets/image-avatar.jpg";
+import avatar from "@/assets/logout.png";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -41,7 +41,7 @@ const Header = () => {
 
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <div className="w-8 h-8 rounded-full overflow-hidden">
+            <div className="w-6 h-6 overflow-hidden">
               <img
                 src={avatar}
                 alt="User avatar"
