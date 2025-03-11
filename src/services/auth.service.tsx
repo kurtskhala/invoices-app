@@ -1,16 +1,11 @@
-import Cookies from 'js-cookie';
-import { SignUpData } from '@/types';
-import { ProtectedRouteProps } from '@/types';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import Cookies from "js-cookie";
+import { SignUpData } from "@/types";
+import { ProtectedRouteProps } from "@/types";
+import { Navigate, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-const TOKEN_COOKIE_NAME = 'auth_token';
-const COOKIE_OPTIONS = {
-  expires: 7,
-  secure: true,
-  sameSite: 'strict' as const,
-  path: '/',
-};
+const TOKEN_COOKIE_NAME = "auth_token";
+const COOKIE_OPTIONS = { secure: true, sameSite: "strict" as const, path: "/" };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const authService = {
@@ -20,17 +15,20 @@ export const authService = {
     Cookies.set(TOKEN_COOKIE_NAME, token, COOKIE_OPTIONS);
   },
 
-  removeToken: (): void => Cookies.remove(TOKEN_COOKIE_NAME, { path: '/' }),
+  removeToken: (): void => Cookies.remove(TOKEN_COOKIE_NAME, { path: "/" }),
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   login: async (email: string, password: string): Promise<any> => {
-    const response = await fetch('https://shark-app-jk6jb.ondigitalocean.app/auth/sign-in', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await fetch(
+      "https://shark-app-jk6jb.ondigitalocean.app/auth/sign-in",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
@@ -41,39 +39,27 @@ export const authService = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signup: async (data: SignUpData): Promise<any> => {
-    const response = await fetch('https://shark-app-jk6jb.ondigitalocean.app/auth/sign-up', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      "https://shark-app-jk6jb.ondigitalocean.app/auth/sign-up",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     const result = await response.json();
     if (!response.ok) {
-      if (result.message === 'Email already exists') {
-        throw new Error('Email already in use');
+      if (result.message === "Email already exists") {
+        throw new Error("Email already in use");
       }
-      throw new Error(result.message || 'Something went wrong');
+      throw new Error(result.message || "Something went wrong");
     }
 
     return result;
   },
-
-  // logout: async () => {
-  //   try {
-  //     await fetch('http://localhost:3000/auth/logout', {
-  //       method: 'POST',
-  //       headers: {
-  //         Authorization: `Bearer ${Cookies.get(TOKEN_COOKIE_NAME)}`,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Logout error:', error);
-  //   } finally {
-  //     authService.removeToken();
-  //   }
-  // },
 
   getUserId: (): string | null => {
     const token = authService.getToken();
@@ -84,7 +70,7 @@ export const authService = {
       const decoded: any = jwtDecode(token);
       return decoded.userId || null;
     } catch (error) {
-      console.error('Error decoding token:', error);
+      console.error("Error decoding token:", error);
       return null;
     }
   },
@@ -96,7 +82,7 @@ export const authService = {
     const token = authService.getToken();
 
     if (!token) {
-      throw new Error('Unauthorized: No token provided');
+      throw new Error("Unauthorized: No token provided");
     }
 
     const response = await fetch(url, {
@@ -110,14 +96,32 @@ export const authService = {
     return response;
   },
 
+  // isAuthenticated: (): boolean => {
+  //   return Boolean(authService.getToken());
+  // },
   isAuthenticated: (): boolean => {
-    return Boolean(authService.getToken());
+    const token = authService.getToken();
+    if (!token) return false;
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const decoded: any = jwtDecode(token);
+      if (decoded.exp * 1000 < Date.now()) {
+        authService.removeToken(); // Remove expired token
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Token decode error:", error);
+      authService.removeToken(); // Remove invalid token
+      return false;
+    }
   },
 };
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  redirectTo = '/signin',
+  redirectTo = "/signin",
 }) => {
   const isAuthenticated = authService.isAuthenticated();
 
@@ -132,10 +136,10 @@ export const useLogout = () => {
 
   const handleLogout = () => {
     // Remove the auth token cookie
-    Cookies.remove('auth_token', { path: '/' });
-    
+    Cookies.remove("auth_token", { path: "/" });
+
     // Redirect to sign in page
-    navigate('/signIn', { replace: true });
+    navigate("/signIn", { replace: true });
   };
 
   return handleLogout;

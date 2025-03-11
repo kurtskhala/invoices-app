@@ -54,7 +54,7 @@ export const validateInvoiceForm = (
 
   // Validate invoice details
   if (!formData.invoiceDate) errors.invoiceDate = "Invoice date is required";
-  if (!formData.paymentTerms)
+  if (!formData.paymentTerms) 
     errors.paymentTerms = "Payment terms are required";
   if (!formData.description) errors.description = "Description is required";
 
@@ -84,6 +84,20 @@ export const validateInvoiceFormForDraft = (
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.clientEmail)) {
     errors.clientEmail = "Invalid email format";
   }
+  // Validate items
+  if (!formData.items.length) {
+    errors.items = ["At least one item is required"];
+  } else {
+    const invalidItems = formData.items.some(
+      (item) => !item.name || !item.quantity || !item.price
+    );
+    if (invalidItems) {
+      errors.items = ["All item fields must be filled"];
+    }
+  }
+  // Validate invoice details
+  if (!formData.paymentTerms)
+    errors.paymentTerms = "Payment terms are required";
 
   return [Object.keys(errors).length === 0, errors];
 };

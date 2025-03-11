@@ -49,13 +49,12 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
   const editInvoiceMutation = useUpdateInvoice();
 
   const [formData, setFormData] = useState<Invoice>(initialFormData);
-
   const [items, setItems] = useState(
     initialFormData.items.map((item) => ({ ...item, id: uuidv4() }))
   );
 
   const addItem = () => {
-    setItems([...items, { id: uuidv4(), name: "", quantity: 0, price: 0 }]);
+    setItems([...items, { id: uuidv4(), name: "", quantity: "", price: "" }]);
   };
 
   const removeItem = (id: string) => {
@@ -84,9 +83,10 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
         },
       }));
     } else if (id === "paymentTerms") {
+      const numberValue = Number(value);
       setFormData((prev) => ({
         ...prev,
-        [id]: Number(value),
+        [id]: value === "" ? "" : isNaN(numberValue) ? value : numberValue,
       }));
     } else {
       setFormData((prev) => ({
@@ -106,7 +106,13 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
         ? {
             ...item,
             [field]:
-              field === "quantity" || field === "price" ? Number(value) : value,
+              field === "quantity" || field === "price"
+                ? value === ""
+                  ? ""
+                  : isNaN(Number(value))
+                  ? value
+                  : Number(value)
+                : value,
           }
         : item
     );
@@ -463,6 +469,8 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
                   className={`text-foreground font-bold ${
                     validationErrors.paymentTerms ? "border-red-500" : ""
                   }`}
+                  type="number"
+                  min="0"
                   id="paymentTerms"
                   placeholder="Net 30 Days"
                   onChange={handleInputChange}
@@ -528,6 +536,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
                     <Input
                       className="text-foreground font-bold"
                       type="number"
+                      min="0"
                       placeholder="1"
                       value={item.quantity}
                       onChange={(e) =>
@@ -542,6 +551,7 @@ const InvoiceForm: FC<InvoiceFormProps> = ({ action, invoice, id }) => {
                     <Input
                       className="text-foreground font-bold"
                       type="number"
+                      min="0"
                       placeholder="156.00"
                       value={item.price}
                       onChange={(e) =>
